@@ -7,7 +7,16 @@ use App\Domain\Cell\CellType;
 
 class GameResultChecker
 {
-    private const WIN_ROUTES = [
+    private const MIN_MOVES_TO_HAVE_RESULT = 5;
+    private const MAX_MOVES = 9;
+
+    /**
+     * possible lines with places
+     * 1 | 2 | 3
+     * 4 | 5 | 6
+     * 7 | 8 | 9
+     */
+    private const ALL_POSSIBLE_LINES = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],
@@ -20,58 +29,38 @@ class GameResultChecker
 
     public function check(Board $board): GameResult
     {
-        if ($board->countMoves() < 5) {
+        if ($board->countMoves() < self::MIN_MOVES_TO_HAVE_RESULT) {
             return new GameResult();
         }
-        if ($board->countMoves() === 9) {
+
+        $gameResult = $this->checkWinner($board);
+        if ($gameResult->hasWinner()) {
+            return $gameResult;
+        }
+
+        if ($board->countMoves() === self::MAX_MOVES) {
             return (new GameResult())->setDraw();
-        }
-        $routes = self::WIN_ROUTES;
-        // exclude routes with empty place
-        for ($place = 1; $place <= 9; $place++) {
-            if ($board->getCell($place)->isEmpty()) {
-                foreach ($routes as $index => $route) {
-                    if (in_array($place, $route, true)) {
-                        unset($routes[$index]);
-                    }
-                }
-            }
-            if (empty($routes)) {
-                return new GameResult();
-            }
-        }
-        $winner = $this->checkWinner(CellType::X, $routes, $board);
-        if ($winner) {
-            return $winner;
-        }
-        $winner = $this->checkWinner(CellType::O, $routes, $board);
-        if ($winner) {
-            return $winner;
         }
 
         return new GameResult();
     }
 
-    /**
-     * @param array<int, array<int>> $routes
-     */
-    private function checkWinner(CellType $cellType, array $routes, Board $board): ?GameResult
+    private function checkWinner(Board $board): GameResult
     {
-        foreach ($routes as $route) {
-            $countSameCell = 0;
-            foreach ($route as $place) {
-                if ($board->getCell($place)->getType() === $cellType) {
-                    $countSameCell++;
-                }
-                if ($countSameCell === 3) {
-                    if ($cellType === CellType::X) {
-                        return (new GameResult())->setWinnerX();
+        foreach ([CellType::X, CellType::O] as $cellType) {
+            foreach (self::ALL_POSSIBLE_LINES as $line) {
+                $countSameCell = 0;
+                foreach ($line as $place) {
+                    if ($board->getCell($place)->getType() === $cellType) {
+                        $countSameCell++;
                     }
-
-                    return (new GameResult())->setWinnerO();
+                    if ($countSameCell === 3) {
+                        return (new GameResult())->setWinner($cellType);
+                    }
                 }
             }
         }
-        return null;
+
+        return new GameResult();
     }
 }

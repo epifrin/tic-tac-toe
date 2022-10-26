@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\GameResult;
 
+use App\Domain\Cell\CellType;
+
 class GameResult
 {
     private bool $hasResult = false;
-    // win X or O or dead heat
-    private bool $winnerX = false;
-    private bool $winnerO = false;
+    private ?CellType $winner = null;
     private bool $draw = false;
-
-    public function __construct()
-    {
-    }
 
     public function isGameOver(): bool
     {
@@ -23,12 +19,12 @@ class GameResult
 
     public function isWinnerX(): bool
     {
-        return $this->winnerX;
+        return $this->winner === CellType::X;
     }
 
     public function isWinnerO(): bool
     {
-        return $this->winnerO;
+        return $this->winner === CellType::O;
     }
 
     public function isDraw(): bool
@@ -36,17 +32,15 @@ class GameResult
         return $this->draw;
     }
 
-    public function setWinnerX(): static
+    public function hasWinner(): bool
     {
-        $this->hasResult = true;
-        $this->winnerX = true;
-        return $this;
+        return isset($this->winner);
     }
 
-    public function setWinnerO(): static
+    public function setWinner(CellType $winner): static
     {
         $this->hasResult = true;
-        $this->winnerO = true;
+        $this->winner = $winner;
         return $this;
     }
 
