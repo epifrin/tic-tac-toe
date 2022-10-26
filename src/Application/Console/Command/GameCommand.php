@@ -6,6 +6,7 @@ namespace App\Application\Console\Command;
 
 use App\Domain\Board\Board;
 use App\Domain\Cell\CellType;
+use App\Domain\Computer\Strategy\RandomStrategy;
 use App\Domain\GameResult\GameResult;
 use App\Domain\GameService;
 use Symfony\Component\Console\Command\Command;
@@ -34,11 +35,10 @@ class GameCommand extends Command
 
         $this->showStartScreen($section);
 
-
         $helper = $this->getHelper('question');
         $question = new Question('Please enter your move (from 1 to 9 or q to quit): ', 0);
         $board = new Board();
-        $gameService = new GameService($board);
+        $gameService = new GameService($board, new RandomStrategy());
         while (true) {
             $answer = $helper->ask($input, $section, $question);
             if ($answer === 'q' || $answer === 'quit') {
@@ -55,25 +55,16 @@ class GameCommand extends Command
                         break;
                     }
 
+                    sleep(1);
                     // random Computer move start
-                    $placeO = 0;
-                    while ($board->countMoves() < 9) {
-                        $placeO = random_int(1, 9);
-                        if ($board->getCell($placeO)->isEmpty()) {
-                            break;
-                        }
-                    }
-                    if ($placeO) {
-                        sleep(1);
-                        $board = $gameService->handleMove(CellType::O, $placeO);
-                        $section->clear();
-                        $this->renderBoard($board, $section);
+                    $board = $gameService->makeComputerMove();
+                    $section->clear();
+                    $this->renderBoard($board, $section);
 
-                        $gameResult = $gameService->checkResult();
-                        if ($gameResult->isGameOver()) {
-                            $this->showGameResult($gameResult, $section);
-                            break;
-                        }
+                    $gameResult = $gameService->checkResult();
+                    if ($gameResult->isGameOver()) {
+                        $this->showGameResult($gameResult, $section);
+                        break;
                     }
                     // random Computer move end
                 } catch (\Exception $e) {
@@ -118,7 +109,7 @@ class GameCommand extends Command
     private function showGameResult(GameResult $gameResult, ConsoleSectionOutput $section): void
     {
         if ($gameResult->isDraw()) {
-            $section->writeln('It is draw. Try more!');
+            $section->writeln('It is draw. Try one more time!');
         }
         if ($gameResult->isWinnerX()) {
             $section->writeln('You win!');
