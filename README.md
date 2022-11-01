@@ -3,7 +3,7 @@
 ## How to install
 Run command
 
-`composer install`
+`composer install --no-dev`
 
 Make file `./game` executable
 
