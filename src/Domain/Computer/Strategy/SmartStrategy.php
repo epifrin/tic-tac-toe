@@ -16,6 +16,11 @@ class SmartStrategy implements StrategyInterface
     {
         $this->board = $board;
 
+        $winMove = $this->findWinMove();
+        if ($winMove) {
+            return $winMove;
+        }
+
         $defenceMove = $this->getDefenceMove();
         if ($defenceMove) {
             return $defenceMove;
@@ -39,11 +44,6 @@ class SmartStrategy implements StrategyInterface
 
     private function getAttackMove(): int
     {
-        $nextMove = $this->findWinMove();
-        if ($nextMove) {
-            return $nextMove;
-        }
-
         $nextMove = $this->findLineWithOneO();
         if ($nextMove) {
             return $nextMove;
