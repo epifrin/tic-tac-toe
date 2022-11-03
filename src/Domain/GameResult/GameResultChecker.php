@@ -21,11 +21,7 @@ class GameResultChecker
             return $gameResult;
         }
 
-        if ($board->countMoves() === self::MAX_MOVES) {
-            return (new GameResult())->setDraw();
-        }
-
-        return new GameResult();
+        return $this->checkDraw($board);
     }
 
     private function checkWinner(Board $board): GameResult
@@ -42,6 +38,28 @@ class GameResultChecker
                     }
                 }
             }
+        }
+
+        return new GameResult();
+    }
+
+    private function checkDraw(Board $board): GameResult
+    {
+        if ($board->countMoves() === self::MAX_MOVES) {
+            return (new GameResult())->setDraw();
+        }
+
+        $lines = Board::ALL_POSSIBLE_WIN_LINES;
+        foreach ($lines as $key => $line) {
+            if (
+                $board->countCellTypeInLine(CellType::X, $line) > 0 &&
+                $board->countCellTypeInLine(CellType::O, $line) > 0
+            ) {
+                unset($lines[$key]);
+            }
+        }
+        if (empty($lines)) {
+            return (new GameResult())->setDraw();
         }
 
         return new GameResult();

@@ -48,10 +48,16 @@ class Board
     }
 
     /**
-     * @return Cell[]
+     * @param array<int> $line
      */
-    public function getBoard(): array
+    public function countCellTypeInLine(CellType $cellType, array $line): int
     {
-        return $this->board;
+        $count = 0;
+        foreach ($line as $place) {
+            if ($this->getCell($place)->getType() === $cellType) {
+                $count++;
+            }
+        }
+        return $count;
     }
 }

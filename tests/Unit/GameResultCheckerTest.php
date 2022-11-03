@@ -76,6 +76,13 @@ class GameResultCheckerTest extends TestCase
                     7 => CellType::X, 8 => CellType::X, 9 => CellType::O
                 ],
             ],
+            [
+                [
+                    1 => CellType::X, 2 => CellType::X, 3 => CellType::O,
+                    4 => CellType::O, 5 => CellType::O, 6 => CellType::X,
+                    7 => CellType::X, 8 => CellType::O
+                ],
+            ]
         ];
     }
 }
