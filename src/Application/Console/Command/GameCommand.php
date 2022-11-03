@@ -7,6 +7,7 @@ namespace App\Application\Console\Command;
 use App\Domain\Board\Board;
 use App\Domain\Cell\CellType;
 use App\Domain\Computer\Strategy\RandomStrategy;
+use App\Domain\Computer\Strategy\SmartStrategy;
 use App\Domain\GameResult\GameResult;
 use App\Domain\GameService;
 use Symfony\Component\Console\Command\Command;
@@ -38,7 +39,7 @@ class GameCommand extends Command
         $helper = $this->getHelper('question');
         $question = new Question('Please enter your move (from 1 to 9 or q to quit): ', 0);
         $board = new Board();
-        $gameService = new GameService($board, new RandomStrategy());
+        $gameService = new GameService($board, new SmartStrategy());
         while (true) {
             $answer = $helper->ask($input, $section, $question);
             if ($answer === 'q' || $answer === 'quit') {
