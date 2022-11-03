@@ -6,7 +6,7 @@ namespace App\Domain;
 
 use App\Domain\Board\Board;
 use App\Domain\Cell\CellType;
-use App\Domain\Computer\Strategy\StrategyInterface;
+use App\Domain\Computer\Strategy\Strategy;
 use App\Domain\GameResult\GameResult;
 use App\Domain\GameResult\GameResultChecker;
 
@@ -14,7 +14,7 @@ class GameService
 {
     public function __construct(
         private readonly Board $board,
-        private readonly StrategyInterface $strategy
+        private readonly Strategy $strategy
     ) {
     }
 

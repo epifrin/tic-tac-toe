@@ -4,7 +4,7 @@ namespace App\Domain\Computer\Strategy;
 
 use App\Domain\Board\Board;
 
-class RandomStrategy implements StrategyInterface
+class RandomStrategy implements Strategy
 {
     public function getComputerMove(Board $board): int
     {

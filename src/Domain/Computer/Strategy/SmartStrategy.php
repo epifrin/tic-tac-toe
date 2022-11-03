@@ -5,7 +5,7 @@ namespace App\Domain\Computer\Strategy;
 use App\Domain\Board\Board;
 use App\Domain\Cell\CellType;
 
-class SmartStrategy implements StrategyInterface
+class SmartStrategy implements Strategy
 {
     private const CENTER_PLACE = 5;
     private const GOOD_PLACES = [1, 3, 5, 7, 9];
