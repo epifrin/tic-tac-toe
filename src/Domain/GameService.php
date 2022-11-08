@@ -13,25 +13,23 @@ use App\Domain\GameResult\GameResultChecker;
 class GameService
 {
     public function __construct(
-        private readonly Board $board,
         private readonly Strategy $strategy
     ) {
     }
 
-    public function handleMove(CellType $cellType, int $place): Board
+    public function handleMove(Board $board, CellType $cellType, int $place): Board
     {
-        $this->board->setCell($cellType, $place);
-        return $this->board;
+        return $board->setCell($cellType, $place);
     }
 
-    public function checkResult(): GameResult
+    public function makeComputerMove(Board $board): Board
     {
-        return (new GameResultChecker())->check($this->board);
+        $place = $this->strategy->getComputerMove($board);
+        return $this->handleMove($board, CellType::O, $place);
     }
 
-    public function makeComputerMove(): Board
+    public function checkResult(Board $board): GameResult
     {
-        $place = $this->strategy->getComputerMove($this->board);
-        return $this->handleMove(CellType::O, $place);
+        return (new GameResultChecker())->check($board);
     }
 }

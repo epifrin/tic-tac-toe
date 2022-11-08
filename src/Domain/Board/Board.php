@@ -29,12 +29,13 @@ class Board
     /** @var Cell[] */
     private array $board = [];
 
-    public function setCell(CellType $cellType, int $place): void
+    public function setCell(CellType $cellType, int $place): static
     {
         if (isset($this->board[$place])) {
             throw new \DomainException('This place is already taken');
         }
         $this->board[$place] = $cellType->getCell();
+        return $this;
     }
 
     public function getCell(int $place): Cell
