@@ -12,7 +12,8 @@
     },
     "require": {
         "php": "^8.1",
-        "symfony/console": "^6.1"
+        "symfony/console": "^6.1",
+        "yiisoft/di": "^1.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.8",

@@ -3,10 +3,21 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-use App\Application\Console\Command\GameCommand;
+use App\Domain\Computer\Strategy\SmartStrategy;
+use App\Domain\Computer\Strategy\Strategy;
+use App\Infrastructure\Console\Command\GameCommand;
 use Symfony\Component\Console\Application;
+use Yiisoft\Di\Container;
+use Yiisoft\Di\ContainerConfig;
+
+// container
+$config = ContainerConfig::create()
+    ->withDefinitions([
+        Strategy::class => SmartStrategy::class,
+    ]);
+$container = new Container($config);
 
 $application = new Application();
-$application->add(new GameCommand());
+$application->add($container->get(GameCommand::class));
 $application->setDefaultCommand('game', true);
 $application->run();
