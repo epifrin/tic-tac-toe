@@ -3,6 +3,7 @@
 namespace App\Tests\Unit;
 
 use App\Domain\Board\Board;
+use App\Domain\Board\CellPlace;
 use App\Domain\Cell\CellType;
 use App\Domain\GameResult\GameResultChecker;
 use PHPUnit\Framework\TestCase;
@@ -12,9 +13,9 @@ class GameResultCheckerTest extends TestCase
     public function testLessThanMinMoves(): void
     {
         $board = new Board();
-        $board->setCell(CellType::X, 5);
-        $board->setCell(CellType::O, 1);
-        $board->setCell(CellType::X, 3);
+        $board->setCell(CellType::X, new CellPlace(5));
+        $board->setCell(CellType::O, new CellPlace(1));
+        $board->setCell(CellType::X, new CellPlace(3));
         $gameResult = (new GameResultChecker())->check($board);
         self::assertFalse($gameResult->isGameOver());
         self::assertFalse($gameResult->hasWinner());
@@ -28,7 +29,7 @@ class GameResultCheckerTest extends TestCase
     {
         $board = new Board();
         foreach ($boardMoves as $place => $cell) {
-            $board->setCell($cell, $place);
+            $board->setCell($cell, new CellPlace($place));
         }
         $gameResult = (new GameResultChecker())->check($board);
         self::assertTrue($gameResult->isGameOver());
@@ -58,7 +59,7 @@ class GameResultCheckerTest extends TestCase
     {
         $board = new Board();
         foreach ($boardMoves as $place => $cell) {
-            $board->setCell($cell, $place);
+            $board->setCell($cell, new CellPlace($place));
         }
         $gameResult = (new GameResultChecker())->check($board);
         self::assertTrue($gameResult->isGameOver(), 'game is over');

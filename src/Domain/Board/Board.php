@@ -29,18 +29,18 @@ class Board
     /** @var Cell[] */
     private array $board = [];
 
-    public function setCell(CellType $cellType, int $place): static
+    public function setCell(CellType $cellType, CellPlace $place): static
     {
-        if (isset($this->board[$place])) {
+        if (isset($this->board[$place->value()])) {
             throw new \DomainException('This place is already taken');
         }
-        $this->board[$place] = $cellType->getCell();
+        $this->board[$place->value()] = $cellType->getCell();
         return $this;
     }
 
-    public function getCell(int $place): Cell
+    public function getCell(CellPlace $place): Cell
     {
-        return $this->board[$place] ?? new CellEmpty();
+        return $this->board[$place->value()] ?? new CellEmpty();
     }
 
     public function countMoves(): int
@@ -55,7 +55,7 @@ class Board
     {
         $count = 0;
         foreach ($line as $place) {
-            if ($this->getCell($place)->getType() === $cellType) {
+            if ($this->getCell(new CellPlace($place))->getType() === $cellType) {
                 $count++;
             }
         }

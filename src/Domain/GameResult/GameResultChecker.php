@@ -3,6 +3,7 @@
 namespace App\Domain\GameResult;
 
 use App\Domain\Board\Board;
+use App\Domain\Board\CellPlace;
 use App\Domain\Cell\CellType;
 
 class GameResultChecker
@@ -30,7 +31,7 @@ class GameResultChecker
             foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
                 $countSameCell = 0;
                 foreach ($line as $place) {
-                    if ($board->getCell($place)->getType() === $cellType) {
+                    if ($board->getCell(new CellPlace($place))->getType() === $cellType) {
                         $countSameCell++;
                     }
                     if ($countSameCell === 3) {

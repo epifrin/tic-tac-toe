@@ -3,6 +3,7 @@
 namespace App\Domain\Computer\Strategy;
 
 use App\Domain\Board\Board;
+use App\Domain\Board\CellPlace;
 use App\Domain\Cell\CellType;
 
 class SmartStrategy implements Strategy
@@ -12,7 +13,7 @@ class SmartStrategy implements Strategy
 
     private Board $board;
 
-    public function getComputerMove(Board $board): int
+    public function getComputerMove(Board $board): CellPlace
     {
         $this->board = $board;
 
@@ -29,7 +30,7 @@ class SmartStrategy implements Strategy
         return $this->getAttackMove();
     }
 
-    private function getDefenceMove(): int
+    private function getDefenceMove(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
             if (
@@ -39,10 +40,10 @@ class SmartStrategy implements Strategy
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
-        return 0;
+        return null;
     }
 
-    private function getAttackMove(): int
+    private function getAttackMove(): CellPlace
     {
         $nextMove = $this->findLineWithOneO();
         if ($nextMove) {
@@ -62,7 +63,7 @@ class SmartStrategy implements Strategy
         return $this->anyMove();
     }
 
-    private function findWinMove(): int
+    private function findWinMove(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
             if (
@@ -72,10 +73,10 @@ class SmartStrategy implements Strategy
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
-        return 0;
+        return null;
     }
 
-    private function findLineWithOneO(): int
+    private function findLineWithOneO(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
             if (
@@ -85,53 +86,53 @@ class SmartStrategy implements Strategy
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
-        return 0;
+        return null;
     }
 
-    private function takeCenterIfFree(): int
+    private function takeCenterIfFree(): ?CellPlace
     {
-        if ($this->board->getCell(self::CENTER_PLACE)->isEmpty()) {
-            return self::CENTER_PLACE;
+        if ($this->board->getCell(new CellPlace(self::CENTER_PLACE))->isEmpty()) {
+            return new CellPlace(self::CENTER_PLACE);
         }
-        return 0;
+        return null;
     }
 
-    private function findEmptyLine(): int
+    private function findEmptyLine(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
             if ($this->board->countCellTypeInLine(CellType::Empty, $line) === 3) {
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
-        return 0;
+        return null;
     }
 
-    private function anyMove(): int
+    private function anyMove(): CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
             if ($this->board->countCellTypeInLine(CellType::Empty, $line) > 0) {
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
-        return 0;
+        throw new \DomainException('No possible moves');
     }
 
     /**
      * @param array<int> $line
      */
-    private function getEmptyPlaceFromLine(array $line): int
+    private function getEmptyPlaceFromLine(array $line): CellPlace
     {
         $worsePlace = 0;
         foreach ($line as $place) {
-            if ($this->board->getCell($place)->getType() === CellType::Empty) {
+            if ($this->board->getCell(new CellPlace($place))->getType() === CellType::Empty) {
                 if (in_array($place, self::GOOD_PLACES)) {
-                    return $place;
+                    return new CellPlace($place);
                 }
                 $worsePlace = $place;
             }
         }
         if ($worsePlace) {
-            return $worsePlace;
+            return new CellPlace($worsePlace);
         }
         throw new \RuntimeException('Empty place not found');
     }
