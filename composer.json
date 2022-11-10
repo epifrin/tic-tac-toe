@@ -5,11 +5,6 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        }
-    },
     "require": {
         "php": "^8.1",
         "symfony/console": "^6.1",
@@ -20,6 +15,21 @@
         "roave/security-advisories": "dev-latest",
         "squizlabs/php_codesniffer": "^3.7",
         "phpmd/phpmd": "^2.13",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "qossmic/deptrac-shim": "^1.0"
+    },
+    "scripts": {
+        "test": [
+            "phpunit tests",
+            "phpstan analyze -l 9 --xdebug --memory-limit=1800M src"
+        ],
+        "phpunit": "phpunit tests",
+        "phpstan": "phpstan analyze -l 9 --xdebug --memory-limit=1800M src",
+        "deptrac": "deptrac analyze --config-file=deptrac.yaml"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
     }
 }

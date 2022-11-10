@@ -1,0 +1,29 @@
+deptrac:
+  paths:
+    - src/
+  exclude_files: ~
+  layers:
+    - name: Application
+      collectors:
+        - type: directory
+          value: src/Application/.*
+    - name: Domain
+      collectors:
+        - type: directory
+          value: src/Domain/.*
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: src/Infrastructure/.*
+    - name: Symfony
+      collectors:
+        - type: className
+          value: .*Symfony.*
+  ruleset:
+    Domain: ~
+    Application:
+      - Domain
+    Infrastructure:
+      - Application
+      - Domain
+      - Symfony
