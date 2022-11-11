@@ -16,7 +16,7 @@ class Board
      * 4 | 5 | 6
      * 7 | 8 | 9
      */
-    public const ALL_POSSIBLE_WIN_LINES = [
+    final public const ALL_POSSIBLE_WIN_LINES = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],

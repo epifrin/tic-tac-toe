@@ -18,12 +18,12 @@ class SmartStrategy implements Strategy
         $this->board = $board;
 
         $winMove = $this->findWinMove();
-        if ($winMove) {
+        if ($winMove !== null) {
             return $winMove;
         }
 
         $defenceMove = $this->getDefenceMove();
-        if ($defenceMove) {
+        if ($defenceMove !== null) {
             return $defenceMove;
         }
 
@@ -33,10 +33,7 @@ class SmartStrategy implements Strategy
     private function getDefenceMove(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
-            if (
-                $this->board->countCellTypeInLine(CellType::X, $line) === 2 &&
-                $this->board->countCellTypeInLine(CellType::Empty, $line) === 1
-            ) {
+            if ($this->lineHasOnlyTwoX($line)) {
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
@@ -46,7 +43,7 @@ class SmartStrategy implements Strategy
     private function getAttackMove(): CellPlace
     {
         $nextMove = $this->findLineWithOneO();
-        if ($nextMove) {
+        if ($nextMove !== null) {
             return $nextMove;
         }
 
@@ -66,10 +63,7 @@ class SmartStrategy implements Strategy
     private function findWinMove(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
-            if (
-                $this->board->countCellTypeInLine(CellType::Empty, $line) === 1 &&
-                $this->board->countCellTypeInLine(CellType::O, $line) === 2
-            ) {
+            if ($this->lineHasOnlyTwoO($line)) {
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
@@ -79,10 +73,7 @@ class SmartStrategy implements Strategy
     private function findLineWithOneO(): ?CellPlace
     {
         foreach (Board::ALL_POSSIBLE_WIN_LINES as $line) {
-            if (
-                $this->board->countCellTypeInLine(CellType::Empty, $line) === 2 &&
-                $this->board->countCellTypeInLine(CellType::O, $line) === 1
-            ) {
+            if ($this->lineHasOnlyOneO($line)) {
                 return $this->getEmptyPlaceFromLine($line);
             }
         }
@@ -135,5 +126,32 @@ class SmartStrategy implements Strategy
             return new CellPlace($worsePlace);
         }
         throw new \RuntimeException('Empty place not found');
+    }
+
+    /**
+     * @param array<int> $line
+     */
+    private function lineHasOnlyTwoO(array $line): bool
+    {
+        return $this->board->countCellTypeInLine(CellType::O, $line) === 2 &&
+            $this->board->countCellTypeInLine(CellType::Empty, $line) === 1;
+    }
+
+    /**
+     * @param array<int> $line
+     */
+    private function lineHasOnlyTwoX(array $line): bool
+    {
+        return $this->board->countCellTypeInLine(CellType::X, $line) === 2 &&
+            $this->board->countCellTypeInLine(CellType::Empty, $line) === 1;
+    }
+
+    /**
+     * @param array<int> $line
+     */
+    private function lineHasOnlyOneO(array $line): bool
+    {
+        return $this->board->countCellTypeInLine(CellType::Empty, $line) === 2 &&
+            $this->board->countCellTypeInLine(CellType::O, $line) === 1;
     }
 }

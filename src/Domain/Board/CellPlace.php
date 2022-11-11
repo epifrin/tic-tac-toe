@@ -9,7 +9,7 @@ class CellPlace
     private const MIN_PLACE = 1;
     private const MAX_PLACE = 9;
 
-    private int $place;
+    private readonly int $place;
 
     public function __construct(int $place)
     {
