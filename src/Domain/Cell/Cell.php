@@ -20,5 +20,4 @@ abstract class Cell
     }
 
     abstract public function getType(): CellType;
-    abstract public function getSymbol(): string;
 }

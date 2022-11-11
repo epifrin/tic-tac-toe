@@ -13,9 +13,4 @@ class CellEmpty extends Cell
     {
         return true;
     }
-
-    public function getSymbol(): string
-    {
-        return ' ';
-    }
 }

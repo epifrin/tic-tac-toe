@@ -29,9 +29,9 @@ class Output implements \App\Application\Output
             for ($j = 1; $j <= 3; $j++) {
                 $cell = $board->getCell(new CellPlace($place));
                 if ($cell->isX()) {
-                    $lineItems[] = '<fg=red;options=bold>' . $cell->getSymbol() . '</>';
+                    $lineItems[] = '<fg=red;options=bold>X</>';
                 } elseif ($cell->isO()) {
-                    $lineItems[] = '<fg=green;options=bold>' . $cell->getSymbol() . '</>';
+                    $lineItems[] = '<fg=green;options=bold>O</>';
                 } else {
                     $lineItems[] = '<fg=gray>' . $place . '</>';
                 }

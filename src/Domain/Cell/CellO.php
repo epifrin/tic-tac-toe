@@ -13,9 +13,4 @@ class CellO extends Cell
     {
         return true;
     }
-
-    public function getSymbol(): string
-    {
-        return 'O';
-    }
 }
