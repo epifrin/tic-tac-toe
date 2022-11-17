@@ -125,7 +125,7 @@ class SmartStrategy implements Strategy
         if ($worsePlace) {
             return new CellPlace($worsePlace);
         }
-        throw new \RuntimeException('Empty place not found');
+        throw new \RuntimeException('Empty place not found'); // @codeCoverageIgnore
     }
 
     /**
