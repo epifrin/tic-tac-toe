@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application;
 
-use App\Domain\Board\Board;
-use App\Domain\Board\CellPlace;
-use App\Domain\Cell\CellType;
-use App\Domain\GameResult\GameResultChecker;
+use App\Domain\GameResult\GameResult;
 use App\Domain\GameService;
 
 class GameController
 {
     public function __construct(
-        private readonly GameService $gameService,
-        private readonly GameResultChecker $gameResultChecker
+        private readonly GameService $gameService
     ) {
     }
 
@@ -22,7 +18,7 @@ class GameController
     {
         $output->showStartScreen();
 
-        $board = new Board();
+        $this->gameService->startNewGame();
         while (true) {
             $answer = $input->askMove();
             if ($answer === 'q' || $answer === 'quit') {
@@ -30,34 +26,34 @@ class GameController
             }
 
             try {
-                $place = new CellPlace((int)$answer);
-                $board = $this->gameService->handleMove($board, CellType::X, $place);
-                $output->clear();
-                $output->renderBoard($board);
-
-                $gameResult = $this->gameResultChecker->check($board);
-                if ($gameResult->isGameOver()) {
-                    $output->showGameResult($gameResult);
+                $gameResult = $this->gameService->handleUserMove((int)$answer);
+                $isGameOver = $this->showBoardAndGameResult($gameResult, $output);
+                if ($isGameOver) {
                     break;
                 }
 
-                // Computer move start
                 sleep(1);
-                $board = $this->gameService->makeComputerMove($board);
-                $output->clear();
-                $output->renderBoard($board);
-
-                $gameResult = $this->gameResultChecker->check($board);
-                if ($gameResult->isGameOver()) {
-                    $output->showGameResult($gameResult);
+                $gameResult = $this->gameService->makeComputerMove();
+                $isGameOver = $this->showBoardAndGameResult($gameResult, $output);
+                if ($isGameOver) {
                     break;
                 }
-                // Computer move end
             } catch (\DomainException $e) {
                 $output->clear();
                 $output->showError($e->getMessage());
-                $output->renderBoard($board);
+                $output->renderBoard($this->gameService->getBoard());
             }
         }
+    }
+
+    private function showBoardAndGameResult(GameResult $gameResult, Output $output): bool
+    {
+        $output->clear();
+        $output->renderBoard($this->gameService->getBoard());
+        if ($gameResult->isGameOver()) {
+            $output->showGameResult($gameResult);
+            return true;
+        }
+        return false;
     }
 }

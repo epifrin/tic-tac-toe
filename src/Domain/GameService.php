@@ -8,22 +8,39 @@ use App\Domain\Board\Board;
 use App\Domain\Board\CellPlace;
 use App\Domain\Cell\CellType;
 use App\Domain\Computer\Strategy\Strategy;
+use App\Domain\GameResult\GameResult;
+use App\Domain\GameResult\GameResultChecker;
 
 class GameService
 {
+    private Board $board;
+
     public function __construct(
-        private readonly Strategy $strategy
+        private readonly Strategy $strategy,
+        private readonly GameResultChecker $gameResultChecker,
     ) {
     }
 
-    public function handleMove(Board $board, CellType $cellType, CellPlace $place): Board
+    public function startNewGame(): void
     {
-        return $board->setCell($cellType, $place);
+        $this->board = new Board();
     }
 
-    public function makeComputerMove(Board $board): Board
+    public function handleUserMove(int $place): GameResult
     {
-        $place = $this->strategy->getComputerMove($board);
-        return $this->handleMove($board, CellType::O, $place);
+        $this->board->setCell(CellType::X, new CellPlace((int)$place));
+        return $this->gameResultChecker->check($this->board);
+    }
+
+    public function makeComputerMove(): GameResult
+    {
+        $place = $this->strategy->getComputerMove($this->board);
+        $this->board->setCell(CellType::O, $place);
+        return $this->gameResultChecker->check($this->board);
+    }
+
+    public function getBoard(): Board
+    {
+        return $this->board;
     }
 }
